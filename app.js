@@ -3,9 +3,9 @@ let handles = urlParams.get("handles")?.split(';');
 
 if (!handles?.length) {
   handles = [
-    "chaos.social/@alexglow",
+    "https://chaos.social/@alexglow",
     "mstdn.social/alpenglow",
-    "hackaday.social/architeuthisflux",
+    "hackaday.social/@architeuthisflux",
     "leds.social/@graemegets",
     "qoto.org/@Blenster",
     "chaos.social/@chipperdoodles",
@@ -27,21 +27,12 @@ if (!handles?.length) {
 const divLoading = document.getElementById("loading");
 const divProgress = document.getElementById('progress');
 const tableBody = document.getElementById('tableBody');
+const textAreaHandles = document.getElementById('textAreaHandles');
+const buttonSubmitHandles = document.getElementById('buttonSubmitHandles');
+
+buttonSubmitHandles.addEventListener('click', submitHandles);
 
 loadTable();
-
-async function getProfile(server, username) {
-  try {
-    let response = await fetch(
-      `https://${server}/api/v1/accounts/lookup?acct=${username}`
-    );
-    const profile = await response.json();
-    console.log({ profile, response });
-    return profile;  
-  } catch (error) {
-    console.error("error getting profile: ", error);
-  }
-}
 
 async function loadTable() {
   divLoading.style.display = "block";
@@ -50,12 +41,27 @@ async function loadTable() {
   const profiles = [];
   let i = 1;
 
-  for (const handle of handles) {
-    divProgress.innerText = `Getting profile ${handle} ${i} of ${handles.length}`;
-    const [server, username] = handle.split('/');
-    const profile = await getProfile(server, username);
-    profiles.push(profile);
-    i++;
+  for (let handle of handles) {
+    try {
+      divProgress.innerText = `Getting profile ${handle} ${i} of ${handles.length}`;
+      
+      if (handle.startsWith('https://')) {
+        handle = handle.replace('https://', '');
+      }
+
+      handle = handle.trim();
+
+      let [server, username] = handle.split('/');
+
+      if (username.startsWith('@')) username = username.replace('@', '');
+      
+      const profile = await getProfile(server, username);
+      
+      profiles.push(profile);
+      i++;
+    } catch(error) {
+      console.error(error);
+    }
   }
 
   profiles.sort((a, b) => b.followers_count - a.followers_count);
@@ -63,6 +69,8 @@ async function loadTable() {
   i = 1;
 
   for (const profile of profiles) {
+    if (!profile) continue;
+    
     const followersPerFollow = ((profile.followers_count ?? 0) / (profile.following_count ?? 0)).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 });
     // const followersPerPost = ((profile.followers_count ?? 0) / (profile.postsCount ?? 0)).toLocaleString(undefined, { style: 'percent', minimumFractionDigits:0 });
 
@@ -102,4 +110,25 @@ async function loadTable() {
   divProgress.innerHTML = '';
 
   // console.log({profiles});
+}
+
+async function getProfile(server, username) {
+  try {
+    let response = await fetch(
+      `https://${server}/api/v1/accounts/lookup?acct=${username}`
+    );
+    const profile = await response.json();
+    console.log({ profile, response });
+    return profile;  
+  } catch (error) {
+    console.error("error getting profile: ", error);
+  }
+}
+
+function submitHandles() {
+  const value = textAreaHandles.value;
+  let newHandles = value.split('\n');
+  newHandles = newHandles.map(handle => handle.trim()).filter(handle => !!handle);
+  console.log(newHandles);
+  window.location = `/index.htm?handles=${newHandles.join(';')}`;
 }
