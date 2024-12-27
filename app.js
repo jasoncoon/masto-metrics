@@ -3,24 +3,25 @@ let handles = urlParams.get("handles")?.split(';');
 
 if (!handles?.length) {
   handles = [
-    "https://chaos.social/@alexglow",
-    "mstdn.social/alpenglow",
-    "hackaday.social/@architeuthisflux",
-    "leds.social/@graemegets",
-    "qoto.org/@Blenster",
+    "chaos.social/@alexglow",
     "chaos.social/@chipperdoodles",
-    "mastodon.social/clomads",
-    // "desertember.bsky.social",
-    "mastodon.social/wormyrocks",
-    "leds.social/@jasoncoon",
-    "mastodon.social/geekmomprojects",
-    "mastodon.social/@gvy_dvpont",
     "chaos.social/ishotjr",
-    "mastodon.social/joeycastillo",
-    "mstdn.social/lasermistress",
     "fosstodon.org/leeborg",
+    "hackaday.social/@architeuthisflux",
     "indieweb.social/settinger",
     "infosec.exchange/straithe",
+    "leds.social/@graemegets",
+    "leds.social/@highenergybeams",
+    "leds.social/@jasoncoon",
+    "leds.social/benhencke",
+    "mastodon.social/@gvy_dvpont",
+    "mastodon.social/clomads",
+    "mastodon.social/geekmomprojects",
+    "mastodon.social/joeycastillo",
+    "mastodon.social/wormyrocks",
+    "mstdn.social/alpenglow",
+    "mstdn.social/lasermistress",
+    "qoto.org/@Blenster",
   ];
 }
 
