@@ -1,5 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
-let handles = urlParams.get("handles")?.split(';');
+let handles = urlParams.get("handles")?.split(";");
 
 if (!handles?.length) {
   handles = [
@@ -10,6 +10,7 @@ if (!handles?.length) {
     "indieweb.social/settinger",
     "infosec.exchange/straithe",
     "leds.social/@architeuthisflux",
+    "leds.social/@flashingjanet",
     "leds.social/@graemegets",
     "leds.social/@highenergybeams",
     "leds.social/@jasoncoon",
@@ -26,41 +27,41 @@ if (!handles?.length) {
 }
 
 const divLoading = document.getElementById("loading");
-const divProgress = document.getElementById('progress');
-const tableBody = document.getElementById('tableBody');
-const textAreaHandles = document.getElementById('textAreaHandles');
-const buttonSubmitHandles = document.getElementById('buttonSubmitHandles');
+const divProgress = document.getElementById("progress");
+const tableBody = document.getElementById("tableBody");
+const textAreaHandles = document.getElementById("textAreaHandles");
+const buttonSubmitHandles = document.getElementById("buttonSubmitHandles");
 
-buttonSubmitHandles.addEventListener('click', submitHandles);
+buttonSubmitHandles.addEventListener("click", submitHandles);
 
 loadTable();
 
 async function loadTable() {
   divLoading.style.display = "block";
-  tableBody.innerHTML = '';
-  
+  tableBody.innerHTML = "";
+
   const profiles = [];
   let i = 1;
 
   for (let handle of handles) {
     try {
       divProgress.innerText = `Getting profile ${handle} ${i} of ${handles.length}`;
-      
-      if (handle.startsWith('https://')) {
-        handle = handle.replace('https://', '');
+
+      if (handle.startsWith("https://")) {
+        handle = handle.replace("https://", "");
       }
 
       handle = handle.trim();
 
-      let [server, username] = handle.split('/');
+      let [server, username] = handle.split("/");
 
-      if (username.startsWith('@')) username = username.replace('@', '');
-      
+      if (username.startsWith("@")) username = username.replace("@", "");
+
       const profile = await getProfile(server, username);
-      
+
       profiles.push(profile);
       i++;
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }
@@ -71,8 +72,10 @@ async function loadTable() {
 
   for (const profile of profiles) {
     if (!profile) continue;
-    
-    const followersPerFollow = ((profile.followers_count ?? 0) / (profile.following_count ?? 0)).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 0 });
+
+    const followersPerFollow = (
+      (profile.followers_count ?? 0) / (profile.following_count ?? 0)
+    ).toLocaleString(undefined, { style: "percent", minimumFractionDigits: 0 });
     // const followersPerPost = ((profile.followers_count ?? 0) / (profile.postsCount ?? 0)).toLocaleString(undefined, { style: 'percent', minimumFractionDigits:0 });
 
     const row = tableBody.insertRow();
@@ -80,27 +83,32 @@ async function loadTable() {
 
     cell = row.insertCell();
     cell.innerHTML = i.toLocaleString();
-    
+
     cell = row.insertCell();
-    cell.innerHTML = `<a href="${profile.url}">${profile.display_name || profile.username}</a>`;
-    
+    cell.innerHTML = `<a href="${profile.url}">${
+      profile.display_name || profile.username
+    }</a>`;
+
     cell = row.insertCell();
-    cell.innerHTML = profile.followers_count?.toLocaleString(); 
-    
+    cell.innerHTML = profile.followers_count?.toLocaleString();
+
     cell = row.insertCell();
     cell.innerHTML = profile.following_count?.toLocaleString();
-    
+
     cell = row.insertCell();
-    cell.title = 'Followers per Follow';
-    cell.innerHTML = followersPerFollow.toLocaleString(undefined, { style: 'percent', minimumFractionDigits:0 });
-    
+    cell.title = "Followers per Follow";
+    cell.innerHTML = followersPerFollow.toLocaleString(undefined, {
+      style: "percent",
+      minimumFractionDigits: 0,
+    });
+
     // cell = row.insertCell();
     // cell.innerHTML = profile.postsCount?.toLocaleString();
 
     // cell = row.insertCell();
     // cell.title = 'Followers per Post';
     // cell.innerHTML = followersPerPost.toLocaleString(undefined, { style: 'percent', minimumFractionDigits:0 });
-    
+
     cell = row.insertCell();
     cell.innerHTML = new Date(profile.created_at).toLocaleString();
 
@@ -108,7 +116,7 @@ async function loadTable() {
   }
 
   divLoading.style.display = "none";
-  divProgress.innerHTML = '';
+  divProgress.innerHTML = "";
 
   // console.log({profiles});
 }
@@ -120,7 +128,7 @@ async function getProfile(server, username) {
     );
     const profile = await response.json();
     console.log({ profile, response });
-    return profile;  
+    return profile;
   } catch (error) {
     console.error("error getting profile: ", error);
   }
@@ -128,8 +136,10 @@ async function getProfile(server, username) {
 
 function submitHandles() {
   const value = textAreaHandles.value;
-  let newHandles = value.split('\n');
-  newHandles = newHandles.map(handle => handle.trim()).filter(handle => !!handle);
+  let newHandles = value.split("\n");
+  newHandles = newHandles
+    .map((handle) => handle.trim())
+    .filter((handle) => !!handle);
   console.log(newHandles);
-  window.location = `/masto-metrics/index.htm?handles=${newHandles.join(';')}`;
+  window.location = `/masto-metrics/index.htm?handles=${newHandles.join(";")}`;
 }
