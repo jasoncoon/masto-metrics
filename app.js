@@ -7,7 +7,6 @@ if (!handles?.length) {
     "chaos.social/@chipperdoodles",
     "chaos.social/ishotjr",
     "fosstodon.org/leeborg",
-    "indieweb.social/settinger",
     "infosec.exchange/straithe",
     "leds.social/@architeuthisflux",
     "leds.social/@flashingjanet",
