@@ -54,7 +54,7 @@ async function onLoad() {
   // eslint-disable-next-line no-undef
   chart = new google.visualization.LineChart(divFollowersChart);
 
-  // await loadTable();
+  await loadTable();
 
   await fetchChartData();
 }
