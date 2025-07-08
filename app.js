@@ -39,6 +39,7 @@ async function onLoad() {
       "leds.social/@graemegets",
       "leds.social/@highenergybeams",
       "leds.social/@jasoncoon",
+      "leds.social/@maketvee",
       "leds.social/benhencke",
       "mastodon.social/@gvy_dvpont",
       "mastodon.social/clomads",
