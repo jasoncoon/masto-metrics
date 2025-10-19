@@ -16,6 +16,7 @@ inputLogScale.addEventListener("change", drawChart);
 inputPointSize.addEventListener("change", drawChart);
 
 let handles;
+let days;
 
 let chart;
 let chartData;
@@ -26,6 +27,8 @@ let allItems;
 async function onLoad() {
   const urlParams = new URLSearchParams(window.location.search);
   handles = urlParams.get("handles")?.split(";");
+
+  days = parseInt(urlParams.get("days") || "30");
 
   if (!handles?.length) {
     handles = [
@@ -290,8 +293,16 @@ function reloadChart() {
 function getAllDates(items) {
   const allDates = [];
 
+  const date = new Date();
+  date.setDate(date.getDate() - (days ?? 30));
+  const startDate = date.toISOString();
+
   for (const item of items) {
     if (allDates.includes(item.date)) {
+      continue;
+    }
+
+    if (item.date < startDate) {
       continue;
     }
 
