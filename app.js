@@ -154,7 +154,7 @@ async function getProfile(server, username) {
       `https://${server}/api/v1/accounts/lookup?acct=${username}`
     );
     const profile = await response.json();
-    console.log({ profile, response });
+    // console.log({ profile, response });
     return profile;
   } catch (error) {
     console.error("error getting profile: ", error);
@@ -167,8 +167,10 @@ function submitHandles() {
   newHandles = newHandles
     .map((handle) => handle.trim())
     .filter((handle) => !!handle);
-  console.log(newHandles);
-  window.location = `/masto-metrics/index.htm?handles=${newHandles.join(";")}`;
+  // console.log(newHandles);
+  window.location.href = `/masto-metrics/index.htm?handles=${newHandles.join(
+    ";"
+  )}`;
 }
 
 async function fetchChartData() {

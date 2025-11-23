@@ -2,17 +2,30 @@ const navbarBrand = document.getElementById("navbar-brand");
 const divLoading = document.getElementById("loading");
 const divProgress = document.getElementById("progress");
 const tableBody = document.getElementById("tableBody");
+const btnGo = document.getElementById("btnGo");
+const inputHandle = document.getElementById("inputHandle");
+
+btnGo.onclick = () => {
+  console.log({
+    handle: inputHandle.value,
+    location: `/followers.htm?handle=${inputHandle.value}`,
+  });
+  window.location.href = `/followers.htm?handle=${inputHandle.value}`;
+};
 
 let allPosts = [];
 let handle;
 let maxId;
+
+onLoad();
 
 async function onLoad() {
   const urlParams = new URLSearchParams(window.location.search);
   handle = urlParams.get("handle");
 
   if (!handle) {
-    handle = "leds.social/@jasoncoon";
+    // handle = "leds.social/@jasoncoon";
+    return;
   }
 
   const title = `${handle} | Profile Details | Mastodon Metrics`;
@@ -128,7 +141,7 @@ async function getProfile(server, username) {
       `https://${server}/api/v1/accounts/lookup?acct=${username}`
     );
     const profile = await response.json();
-    console.log({ profile, response });
+    // console.log({ profile, response });
     return profile;
   } catch (error) {
     console.error("error getting profile: ", error);
@@ -143,19 +156,9 @@ async function getPosts(server, userId, maxId) {
       }`
     );
     const posts = await response.json();
-    console.log({ posts, response });
+    // console.log({ posts, response });
     return posts;
   } catch (error) {
     console.error("error getting profile: ", error);
   }
 }
-
-function getSortedPosts(handles) {
-  const sortedHandles = latestTotals
-    .sort((a, b) => b.latestTotal - a.latestTotal)
-    .map((h) => h.handle);
-
-  return sortedHandles;
-}
-
-onLoad();
