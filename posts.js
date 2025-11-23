@@ -8,7 +8,7 @@ const inputHandle = document.getElementById("inputHandle");
 btnGo.onclick = () => {
   console.log({
     handle: inputHandle.value,
-    location: `/followers.htm?handle=${inputHandle.value}`,
+    location: `/masto-metrics/followers.htm?handle=${inputHandle.value}`,
   });
   window.location.href = `/followers.htm?handle=${inputHandle.value}`;
 };
