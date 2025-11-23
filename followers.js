@@ -2,15 +2,10 @@ const navbarBrand = document.getElementById("navbar-brand");
 const divLoading = document.getElementById("loading");
 const divProgress = document.getElementById("progress");
 const tableBody = document.getElementById("tableBody");
-const btnGo = document.getElementById("btnGo");
 const inputHandle = document.getElementById("inputHandle");
 
-btnGo.onclick = () => {
-  console.log({
-    handle: inputHandle.value,
-    location: `/masto-metrics/followers.htm?handle=${inputHandle.value}`,
-  });
-  window.location.href = `/followers.htm?handle=${inputHandle.value}`;
+document.getElementById("btnGo").onclick = () => {
+  window.location.href = `/masto-metrics/followers.htm?handle=${inputHandle.value}`;
 };
 
 let handles;
