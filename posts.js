@@ -5,7 +5,7 @@ const tableBody = document.getElementById("tableBody");
 const inputHandle = document.getElementById("inputHandle");
 
 document.getElementById("btnGo").onclick = () => {
-  window.location.href = `/masto-metrics/followers.htm?handle=${inputHandle.value}`;
+  window.location.href = `/masto-metrics/posts.htm?handle=${inputHandle.value}`;
 };
 
 let allPosts = [];
