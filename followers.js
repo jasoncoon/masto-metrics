@@ -32,7 +32,7 @@ async function onLoad() {
 
   const title = `${handle} | Followers | Mastodon Metrics`;
   document.title = title;
-  navbarBrand.innerHTML = `<a href="/">Mastodon Metrics</a> | ${handle} | Followers`;
+  navbarBrand.innerHTML = `<a href="/masto-metrics">Mastodon Metrics</a> | ${handle} | Followers`;
 
   try {
     divProgress.innerText = `Getting followers for profile ${handle}`;
@@ -49,7 +49,7 @@ async function onLoad() {
 
     const title = `${username} | Followers | Mastodon Metrics`;
     document.title = title;
-    navbarBrand.innerHTML = `<a href="/">Mastodon Metrics</a> | ${handle} | Followers`;
+    navbarBrand.innerHTML = `<a href="/masto-metrics">Mastodon Metrics</a> | ${handle} | Followers`;
 
     const profile = await getProfile(server, username);
 
