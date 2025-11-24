@@ -145,8 +145,8 @@ function loadProfiles(profiles) {
       minimumFractionDigits: 0,
     });
 
-    // cell = row.insertCell();
-    // cell.innerHTML = profile.postsCount?.toLocaleString();
+    cell = row.insertCell();
+    cell.innerHTML = profile.statuses_count?.toLocaleString();
 
     // cell = row.insertCell();
     // cell.title = 'Followers per Post';
