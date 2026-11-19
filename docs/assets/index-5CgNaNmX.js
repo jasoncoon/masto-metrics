@@ -1,0 +1,1 @@
+import{m as e,n as t,p as n,s as r}from"./src-BMaiPl5S.js";var i=e();n((0,i.jsx)(r,{platform:t}));

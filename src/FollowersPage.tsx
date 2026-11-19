@@ -9,10 +9,11 @@ import {
   ProfileHeader,
   sanitizeHtml,
   TrackedProfiles,
+  useIsMobile,
   useUrlParams,
 } from "@social-metrics/web-core";
 import { Alert, Avatar, Button, Card, Flex, Spin, Table, type TableColumnsType, Tooltip, Typography } from "antd";
-import { useMemo } from "react";
+import { type CSSProperties, useMemo } from "react";
 import { getAllFollowing, getFollowers } from "./mastodonApi";
 import { useAccountList } from "./useAccountList";
 
@@ -46,26 +47,44 @@ async function loadFollowers(
 
 const ratio = (r: Row) => (r.following_count ? r.followers_count / r.following_count : undefined);
 
-const columns: TableColumnsType<Row & { rank: number }> = [
-  { title: "#", dataIndex: "rank", width: 56, align: "right" },
-  {
+const ellipsis: CSSProperties = { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" };
+
+type RankedRow = Row & { rank: number };
+type Column = TableColumnsType<RankedRow>[number];
+
+/**
+ * On phones the name is pinned (and narrow), and the counts come right after it
+ * so they're on screen; mutual and rank move further along.
+ */
+const getColumns = (mobile: boolean): TableColumnsType<RankedRow> => {
+  const rank: Column = { title: "#", dataIndex: "rank", width: 56, align: "right" };
+  const name: Column = {
     title: "Name",
     key: "name",
+    fixed: mobile ? "start" : undefined,
     sorter: (a, b) => (a.display_name || a.username).localeCompare(b.display_name || b.username),
     render: (_, r) => (
-      <Flex gap={8} align="center" style={{ minWidth: 220 }}>
-        <Avatar src={r.avatar_static} size={32} />
-        <Flex vertical style={{ lineHeight: 1.25 }}>
-          <a href={r.url} target="_blank" rel="noopener noreferrer">
+      <Flex gap={mobile ? 6 : 8} align="center" style={mobile ? { width: "min(40vw, 190px)" } : { minWidth: 220 }}>
+        <Avatar src={r.avatar_static} size={mobile ? 24 : 32} style={{ flex: "none" }} />
+        <Flex vertical style={{ minWidth: 0, lineHeight: 1.25 }}>
+          <a href={r.url} target="_blank" rel="noopener noreferrer" style={mobile ? ellipsis : undefined}>
             {r.display_name || r.username}
           </a>
-          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+          <Typography.Text type="secondary" style={{ fontSize: 12, ...(mobile && ellipsis) }}>
             @{r.acct}
           </Typography.Text>
         </Flex>
       </Flex>
     ),
-  },
+  };
+  const [mutual, followers, following, fpf, posts, joined, bio] = dataColumns(mobile);
+  return mobile
+    ? [name, followers, following, fpf, posts, mutual, rank, joined, bio]
+    : [rank, name, mutual, followers, following, fpf, posts, joined, bio];
+};
+
+/** Mutual, Followers, Following, FPF, Posts, Joined, Bio. */
+const dataColumns = (mobile: boolean): [Column, Column, Column, Column, Column, Column, Column] => [
   {
     title: "Mutual",
     key: "mutual",
@@ -123,7 +142,7 @@ const columns: TableColumnsType<Row & { rank: number }> = [
     dataIndex: "note",
     render: (note: string) => (
       <div
-        style={{ maxWidth: 480, maxHeight: 96, overflow: "auto", fontSize: 12 }}
+        style={{ maxWidth: "min(480px, 70vw)", maxHeight: mobile ? 54 : 96, overflow: "auto", fontSize: 12 }}
         dangerouslySetInnerHTML={{ __html: sanitizeHtml(note) }}
       />
     ),
@@ -144,6 +163,18 @@ export function FollowersPage() {
     [state.items]
   );
   const mutuals = rows.filter((r) => r.mutual).length;
+  const mobile = useIsMobile();
+  const columns = useMemo(() => getColumns(mobile), [mobile]);
+
+  const progress = state.loading && (
+    <Flex gap={12} align="center" wrap>
+      <Spin size="small" />
+      <Typography.Text type="secondary">{state.status}</Typography.Text>
+      <Button size="small" onClick={state.stop}>
+        Stop
+      </Button>
+    </Flex>
+  );
 
   return (
     <AppShell platform={mastodon} current="followers" title={`${state.profile?.displayName ?? handle} followers`}>
@@ -160,18 +191,10 @@ export function FollowersPage() {
           {state.error && <Alert type="error" showIcon title={state.error} style={{ marginBottom: 16 }} />}
           <Card
             title={`${formatCount(rows.length)} followers · ${formatCount(mutuals)} mutual`}
-            extra={
-              state.loading && (
-                <Flex gap={12} align="center">
-                  <Spin size="small" />
-                  <Typography.Text type="secondary">{state.status}</Typography.Text>
-                  <Button size="small" onClick={state.stop}>
-                    Stop
-                  </Button>
-                </Flex>
-              )
-            }
+            // No room beside the title on phones; show progress above the table instead.
+            extra={!mobile && progress}
           >
+            {mobile && progress && <div style={{ marginBottom: 12 }}>{progress}</div>}
             <Table
               rowKey="id"
               size="small"

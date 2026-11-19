@@ -12,6 +12,7 @@
     "url": "git+https://github.com/jasoncoon/masto-metrics.git"
   },
   "scripts": {
+    "start": "npm run dev",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
