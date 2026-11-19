@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" style="color-scheme: dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mastodon Metrics has moved</title>
+<link rel="canonical" href="https://jasoncoon.github.io/social-metrics/masto/" />
+<script>
+  // Mastodon Metrics is now part of Social Metrics. Keep the query string and hash so shared links still work.
+  var pages = {"index.html": "", "index.htm": "", "profile.html": "profile.html", "followers.html": "followers.html", "followers.htm": "followers.html", "posts.html": "posts.html", "posts.htm": "posts.html"};
+  var name = location.pathname.replace(/^\/masto-metrics\/?/, "");
+  var target = Object.prototype.hasOwnProperty.call(pages, name) ? pages[name] : "";
+  location.replace("https://jasoncoon.github.io/social-metrics/masto/" + target + location.search + location.hash);
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=https://jasoncoon.github.io/social-metrics/masto/" /></noscript>
+</head>
+<body style="background: #0d0d0d; color: #e8e8e6; font-family: system-ui, sans-serif; margin: 0; padding: 32px 16px">
+<p>Mastodon Metrics has moved to <a href="https://jasoncoon.github.io/social-metrics/masto/" style="color: #6ea8fe">https://jasoncoon.github.io/social-metrics/masto/</a>.</p>
+</body>
+</html>
